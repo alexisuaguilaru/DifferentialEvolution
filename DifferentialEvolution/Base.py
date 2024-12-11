@@ -40,7 +40,7 @@ class DifferentialEvolution:
         
         self.Generation = 0
         self.Snapshots = []
-        self.SnapshotPopulation()
+        self.SnapshotPopulation(0)
 
         self.FindOptimal(FunctionEvaluations)
         
@@ -66,11 +66,14 @@ class DifferentialEvolution:
         
         return self.Population[indexOptimalIndividual] , self.FitnessValuesPopulation[indexOptimalIndividual]
 
-    def SnapshotPopulation(self) -> None:
+    def SnapshotPopulation(self,NumberFunctionEvaluations_Generation:int) -> None:
         """
             Method to save a snapshot of the population at generation-st
+
+            -- NumberFunctionEvaluations_Generation:int :: Number of function 
+            evaluations at generation-st 
         """
-        self.Snapshots.append((self.Generation,self.OptimalValue,self.OptimalIndividual,deepcopy(self.Population)))
+        self.Snapshots.append((self.Generation,NumberFunctionEvaluations_Generation,self.OptimalValue,self.OptimalIndividual,deepcopy(self.Population)))
 
     def FindOptimal(self,FunctionEvaluations:int) -> None:
         """
@@ -84,7 +87,7 @@ class DifferentialEvolution:
 
             if (numberFunctionEvaluation+1)%self.PopulationSize == 0:
                 self.Generation += 1
-                self.SnapshotPopulation()
+                self.SnapshotPopulation(numberFunctionEvaluation+1)
     
     def IterativeImproveIndividual(self,indexIndividual:int) -> None:
         """
