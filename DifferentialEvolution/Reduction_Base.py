@@ -45,18 +45,24 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
 
             -- FunctionEvaluations:int :: Amount of function evaluations
         """
+        numberFunctionEvaluationInGeneration = 0
         for numberFunctionEvaluation in range(FunctionEvaluations):
             indexIndividual = numberFunctionEvaluation%self.PopulationSize
             self.IterativeImproveIndividual(indexIndividual)
             
             if (numberFunctionEvaluation+1) in self.ApplyReductionEvaluations:
                 self.ApplyPopulationReduction()
-                self.Generation += 1
                 self.SnapshotPopulation(numberFunctionEvaluation+1)
+                numberFunctionEvaluationInGeneration = -1
 
-            elif (numberFunctionEvaluation+1)%self.PopulationSize == 0:
-                self.Generation += 1
+            elif (numberFunctionEvaluationInGeneration+1)%self.PopulationSize == 0:
                 self.SnapshotPopulation(numberFunctionEvaluation+1)
+                numberFunctionEvaluationInGeneration = -1
+
+            numberFunctionEvaluationInGeneration += 1
+
+        if numberFunctionEvaluationInGeneration != 0:
+            self.SnapshotPopulation(numberFunctionEvaluation+1)
     
     def ApplyPopulationReduction(self):
         """
@@ -67,8 +73,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         
         population = []
         fitnessValuesPopulation = []
-        for clusterIndividual in clustersRepresentativeIndividuals:
-            individual , fitnessValue = clusterIndividual
+        for individual , fitnessValue in clustersRepresentativeIndividuals:
             population.append(individual)
             fitnessValuesPopulation.append(fitnessValue)
         
