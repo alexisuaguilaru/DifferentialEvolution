@@ -6,7 +6,7 @@ from typing import Callable
 from .Base import DifferentialEvolution
 
 class DifferentialEvolution_Reduction(DifferentialEvolution):
-    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable,ClusteringAlgorithm:Callable):
+    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
         """
             Class for Differential Evolution Metaheuristic with Population Reduction 
             based on Clustering Algorithms
@@ -15,12 +15,8 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
 
             -- InitializeIndividual:Callable :: Function to create individuals
 
-            -- ClusteringAlgorithm:Callable :: Algorithm to execute clustering and 
-            to reduce the population size
-
             Based on DE/rand/1/bin using number of function evaluations instead of iterations
         """
-        self.ClusteringAlgorithm = ClusteringAlgorithm
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
     def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float,PercentageEvaluations:list[float]) -> tuple[np.ndarray,list[list]]:
@@ -82,4 +78,9 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
 
     def GetClustersRepresentatives(self) -> list[list[np.ndarray,float]]:
+        """
+            Method to get the representative individuals 
+            from each cluster using a given clustering algorithm 
+            and a una policy of selection
+        """
         pass
