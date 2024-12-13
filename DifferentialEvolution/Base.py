@@ -28,7 +28,7 @@ class DifferentialEvolution:
             
             -- ScalingFactor:float :: Parameter F. Scaling factor for difference vector 
             
-            -- SrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
+            -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
 
             Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
         """

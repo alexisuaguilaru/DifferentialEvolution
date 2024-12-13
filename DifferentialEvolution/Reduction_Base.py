@@ -29,7 +29,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
             
             -- ScalingFactor:float :: Parameter F. Scaling factor for difference vector 
             
-            -- SrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
+            -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
 
             -- PercentageEvaluations:list :: List of percentages of function evaluations 
             where a reduction to population is applied
