@@ -52,9 +52,11 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
 
     return simulationsFunctionEvaluations , simulationsOptimals
 
-def ConvertResultsCSV(SimulationResults:list[list],TypeResult:str,FunctionNumber:str,Dimension:int,YearCEC:str) -> None:
+def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:str,FunctionNumber:str,Dimension:int,YearCEC:str) -> None:
     """
         Function for converting a list of results into a csv file
+
+        -- OptimizerName:str :: Name of the optimizer
     
         -- SimulationResults:list :: Results to convert
         
@@ -67,11 +69,17 @@ def ConvertResultsCSV(SimulationResults:list[list],TypeResult:str,FunctionNumber
         -- YearCEC:str :: CEC problem's year
     """
     fileName , dataType = (f'FunctionEvaluations_F{FunctionNumber}' , int) if TypeResult == 'F' else (f'Optimals_F{FunctionNumber}' , float)
+
     try:
-        os.open(f'CEC_{YearCEC}/Dim_{Dimension}')
+        os.open(f'CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
     except:
         if f'CEC_{YearCEC}' not in os.listdir():
             os.mkdir(f'CEC_{YearCEC}')
+        
         if f'Dim_{Dimension}' not in os.listdir(f'CEC_{YearCEC}'):
             os.mkdir(f'CEC_{YearCEC}/Dim_{Dimension}')
-    pd.DataFrame(SimulationResults,dtype=dataType).to_csv(f'CEC_{YearCEC}/Dim_{Dimension}/{fileName + '.csv'}',header=None,index=None)
+        
+        if f'{OptimizerName}' not in os.listdir(f'CEC_{YearCEC}/Dim_{Dimension}'):
+            os.mkdir(f'CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
+        
+    pd.DataFrame(SimulationResults,dtype=dataType).to_csv(f'CEC_{YearCEC}/Dim_{Dimension}//{OptimizerName}{fileName+'.csv'}',header=None,index=None)
