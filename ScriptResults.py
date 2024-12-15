@@ -1,7 +1,7 @@
-from ..DifferentialEvolution.Base import DifferentialEvolution
-from .FunctionsInitProblem import ObjectiveFunctionCEC , Individual
+from DifferentialEvolution.Base import DifferentialEvolution
 
-from .SimulationsCSV import SimulateOptimizer , ConvertResultsCSV
+from Results.FunctionsInitProblem import ObjectiveFunctionCEC , Individual
+from Results.SimulationsCSV import SimulateOptimizer , ConvertResultsCSV
 
 if __name__ == '__main__':
     yearCEC = '2017'
