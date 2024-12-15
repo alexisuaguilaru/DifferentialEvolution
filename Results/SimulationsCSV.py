@@ -71,15 +71,15 @@ def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:
     fileName , dataType = (f'FunctionEvaluations_F{FunctionNumber}' , int) if TypeResult == 'F' else (f'Optimals_F{FunctionNumber}' , float)
 
     try:
-        os.open(f'CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
+        os.open(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
     except:
-        if f'CEC_{YearCEC}' not in os.listdir():
-            os.mkdir(f'CEC_{YearCEC}')
+        if f'CEC_{YearCEC}' not in os.listdir('Results'):
+            os.mkdir(f'Results/CEC_{YearCEC}')
         
-        if f'Dim_{Dimension}' not in os.listdir(f'CEC_{YearCEC}'):
-            os.mkdir(f'CEC_{YearCEC}/Dim_{Dimension}')
+        if f'Dim_{Dimension}' not in os.listdir(f'Results/CEC_{YearCEC}'):
+            os.mkdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}')
         
-        if f'{OptimizerName}' not in os.listdir(f'CEC_{YearCEC}/Dim_{Dimension}'):
-            os.mkdir(f'CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
+        if f'{OptimizerName}' not in os.listdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}'):
+            os.mkdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
         
-    pd.DataFrame(SimulationResults,dtype=dataType).to_csv(f'CEC_{YearCEC}/Dim_{Dimension}//{OptimizerName}{fileName+'.csv'}',header=None,index=None)
+    pd.DataFrame(SimulationResults,dtype=dataType).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}/{fileName+'.csv'}',header=None,index=None)
