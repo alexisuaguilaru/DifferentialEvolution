@@ -3,7 +3,7 @@ from random import random
 
 from typing import Callable
 
-from Base import DifferentialEvolution
+from .Base import DifferentialEvolution
 
 class DifferentialEvolution_RandomParameters(DifferentialEvolution):
     def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):

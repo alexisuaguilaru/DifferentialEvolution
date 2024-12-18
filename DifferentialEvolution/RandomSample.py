@@ -6,7 +6,7 @@ from random import sample
 
 from typing import Callable
 
-from Reduction_Base import DifferentialEvolution_Reduction
+from .Reduction_Base import DifferentialEvolution_Reduction
 
 class DifferentialEvolution_RandomSample(DifferentialEvolution_Reduction):
     def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):

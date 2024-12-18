@@ -1,7 +1,7 @@
-from Base import DifferentialEvolution
-from RandomSample import DifferentialEvolution_RandomSample
-from Agglomerative import DifferentialEvolution_Agglomerative
-from RandomParameters import DifferentialEvolution_RandomParameters
+from .Base import DifferentialEvolution
+from .RandomSample import DifferentialEvolution_RandomSample
+from .Agglomerative import DifferentialEvolution_Agglomerative
+from .RandomParameters import DifferentialEvolution_RandomParameters
 
 def DifferentialEvolutionVariant(Variant:str):
     """

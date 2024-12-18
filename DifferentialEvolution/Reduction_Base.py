@@ -3,7 +3,7 @@ import numpy as np
 
 from typing import Callable
 
-from Base import DifferentialEvolution
+from .Base import DifferentialEvolution
 
 class DifferentialEvolution_Reduction(DifferentialEvolution):
     def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
