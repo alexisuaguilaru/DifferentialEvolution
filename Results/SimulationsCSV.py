@@ -1,10 +1,11 @@
 from multiprocess import Pool
+from time import time
 import os
 import pandas as pd
 
 from typing import Callable
 
-def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:int=1000,Processes_Jobs:int=None) -> tuple[list,list]:
+def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:int=1000,Processes_Jobs:int=None) -> tuple[list,list,float]:
     """
         Function for simulating several runs/callings of the optimizer
     
@@ -21,7 +22,7 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
 
         Return two lists which contain data about function 
         evaluations and optimal values at each generation 
-        and simulation/run
+        and simulation/run. Also return the time of execution
     """
     def FunctionOptimizer(KwargsOptimizer:dict) -> list[tuple[int,float]]:
         """
@@ -42,7 +43,9 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
         return functionEvaluations_Optimals
 
     with Pool(Processes_Jobs) as poolExecutions:
+        startTime = time()
         simulationResults = poolExecutions.map(FunctionOptimizer,[KwargsOptimizer for _ in range(NumberSimulations)])
+        endTime = time()
 
     simulationsFunctionEvaluations = []
     simulationsOptimals = []
@@ -50,7 +53,9 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
         simulationsFunctionEvaluations.append([generation[0] for generation in simulationResult])
         simulationsOptimals.append([generation[1] for generation in simulationResult])
 
-    return simulationsFunctionEvaluations , simulationsOptimals
+    timeExecution = endTime - startTime
+
+    return simulationsFunctionEvaluations , simulationsOptimals , timeExecution
 
 def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:str,FunctionNumber:str,Dimension:int,YearCEC:str) -> None:
     """
