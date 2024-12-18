@@ -73,7 +73,7 @@ def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:
         
         -- YearCEC:str :: CEC problem's year
     """
-    fileName , dataType = (f'FunctionEvaluations_F{FunctionNumber}' , int) if TypeResult == 'F' else (f'Optimals_F{FunctionNumber}' , float)
+    fileName = f'FunctionEvaluations_F{FunctionNumber}' if TypeResult == 'F' else f'Optimals_F{FunctionNumber}'
 
     try:
         os.open(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
@@ -87,4 +87,4 @@ def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:
         if f'{OptimizerName}' not in os.listdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}'):
             os.mkdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
         
-    pd.DataFrame(SimulationResults,dtype=dataType).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}/{fileName+'.csv'}',header=None,index=None)
+    pd.DataFrame(SimulationResults).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}/{fileName+'.csv'}',header=None,index=None)
