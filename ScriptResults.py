@@ -33,11 +33,13 @@ if __name__ == '__main__':
                     		 'PopulationSize': 100,
                     		 'ScalingFactor': 0.5,
                     		 'CrossoverRate': 0.5,
-                             'PercentageEvaluations': [0.5]
+                             'PercentageEvaluations': [0.25,0.5,0.75]
     					   }
     kwargs_RandomParameters = {
                     			'FunctionEvaluations': 5000,
                     			'PopulationSize': 100,
+                                'RangeScalingFactor': [0.4,0.6],
+                                'RangeCrossoverRate': [0.4,0.6]
                   			  }
     kwargs_VariantDiffEvol = {variantName:kwargs_Variant for variantName , kwargs_Variant in zip(variantNames,[kwargs_Base,kwargs_RandomSample,kwargs_Agglomerative,kwargs_RandomParameters])}
 
@@ -45,7 +47,7 @@ if __name__ == '__main__':
 	
     with Pool(processes_jobs) as poolExecutions:
         timeExecution_VariantFunctions = dict()
-        for variantName in variantNames:
+        for variantName in [variantNames[1]]:
             print(f'START :: {variantName}\n')
 
             variantDiffEvol = DifferentialEvolutionVariant(variantName)
