@@ -9,7 +9,7 @@ if __name__ == '__main__':
     yearCEC = '2017'
     dimension = 2
     numberSimulations = 1000
-    processes_jobs = 12
+    processes_jobs = 16
 
     lowerBound , upperBound = -100 , 100
     initializeIndividual = Individual(lowerBound,upperBound,dimension)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 	
     with Pool(processes_jobs) as poolExecutions:
         timeExecution_VariantFunctions = dict()
-        for variantName in [variantNames[1]]:
+        for variantName in variantNames:
             print(f'START :: {variantName}\n')
 
             variantDiffEvol = DifferentialEvolutionVariant(variantName)
