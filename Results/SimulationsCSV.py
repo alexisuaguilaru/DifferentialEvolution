@@ -88,3 +88,18 @@ def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:
             os.mkdir(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
         
     pd.DataFrame(SimulationResults).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}/{fileName+'.csv'}',header=None,index=None)
+
+def ConvertTimeExecutionCSV(TimeExecution_VariantFunctions:dict[str,list[float]],FunctionNumbers:list[int],Dimension:int,YearCEC:str) -> None:
+    """
+        Function for converting time execution results by variant and function into csv file
+    
+        -- TimeExecution_VariantFunctions:dict :: 
+        
+        -- FunctionNumbers:list :: 
+        
+        -- Dimension:int :: 
+        
+        -- YearCEC:str :: 
+    """
+    indexDataFrame_TimeExecution = [f'F{functionNumber}' for functionNumber in FunctionNumbers]
+    pd.DataFrame(TimeExecution_VariantFunctions,index=indexDataFrame_TimeExecution).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/TimeExecution_Results.csv')
