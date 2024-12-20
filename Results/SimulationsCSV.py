@@ -5,7 +5,7 @@ import pandas as pd
 
 from typing import Callable
 
-def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:int=1000,Processes_Jobs:int=None) -> tuple[list,list,float]:
+def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:int=1000,PoolExecutions:Pool=None) -> tuple[list,list,float]:
     """
         Function for simulating several runs/callings of the optimizer
     
@@ -17,8 +17,8 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
         -- NumberSimulations:int :: Number of executions or 
         simulations of the optimizer
 
-        -- Processes_Jobs:int :: Number of simulations that 
-        are executing at same time
+        -- PoolExecutions:Pool :: Pool of executions where 
+        each simulation is executed
 
         Return two lists which contain data about function 
         evaluations and optimal values at each generation 
@@ -42,10 +42,9 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
         
         return functionEvaluations_Optimals
 
-    with Pool(Processes_Jobs) as poolExecutions:
-        startTime = time()
-        simulationResults = poolExecutions.map(FunctionOptimizer,[KwargsOptimizer for _ in range(NumberSimulations)])
-        endTime = time()
+    startTime = time()
+    simulationResults = PoolExecutions.map(FunctionOptimizer,[KwargsOptimizer for _ in range(NumberSimulations)])
+    endTime = time()
 
     simulationsFunctionEvaluations = []
     simulationsOptimals = []
