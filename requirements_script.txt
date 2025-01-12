@@ -1,0 +1,6 @@
+# Requirements for running and executing scripts and functions/modules
+
+scikit-learn
+pandas
+numpy 
+multiprocess 
