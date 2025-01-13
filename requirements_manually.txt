@@ -1,2 +1,3 @@
 # Requirements for  manual installation
+pip install setuptools
 pip install --ignore-requires-python opfunu==1.0.4
