@@ -1,11 +1,9 @@
 import numpy as np
-from random import sample , random , randrange
-from copy import deepcopy
 
 from typing import Callable
 
 class DifferentialEvolution:
-    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
+    def __init__(self,ObjectiveFunction:Callable,InitializePopulation:Callable):
         """
             Class for Differential Evolution Metaheuristic
             
@@ -16,7 +14,7 @@ class DifferentialEvolution:
             Based on DE/rand/1/bin using number of function evaluations instead of iterations
         """
         self.ObjectiveFunction = ObjectiveFunction
-        self.InitializeIndividual = InitializeIndividual
+        self.InitializePopulation = InitializePopulation
 
     def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float) -> tuple[np.ndarray,list[list]]:
         """
@@ -30,28 +28,29 @@ class DifferentialEvolution:
             
             -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
 
-            Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
+            Return the best optimal solution, because of implementation will be the minimum, and snapshots of the optimal at each function evaluation
         """
         self.PopulationSize = PopulationSize
         self.ScalingFactor = ScalingFactor
         self.CrossoverRate = CrossoverRate
-        self.InitializePopulation()
-        self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
         
-        self.Generation = -1
+        self.InitializeOptimization()
+        self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
+        self.Dimension = self.OptimalIndividual.shape[0]
+
         self.Snapshots = []
-        self.SnapshotPopulation(0)
+        self.WriteSnapshot()
 
         self.FindOptimal(FunctionEvaluations)
         
         return self.OptimalIndividual , self.Snapshots
 
-    def InitializePopulation(self) -> None:
+    def InitializeOptimization(self) -> None:
         """
             Method to initialize Population and FitnessValuesPopulation attributes  
         """
-        self.Population = np.array([self.InitializeIndividual() for _ in range(self.PopulationSize)])
-        self.FitnessValuesPopulation = np.array([self.ObjectiveFunction(individual) for individual in self.Population])
+        self.Population = self.InitializePopulation(self.PopulationSize)
+        self.FitnessValuesPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.Population)
 
     def BestOptimalIndividual(self) -> tuple[np.ndarray,float]:
         """
@@ -59,22 +58,14 @@ class DifferentialEvolution:
             
             Return the best optimal found's individual and function value
         """
-        indexOptimalIndividual = 0
-        for indexIndividual in range(1,self.PopulationSize):
-            if self.FitnessValuesPopulation[indexIndividual] < self.FitnessValuesPopulation[indexOptimalIndividual]:
-                indexOptimalIndividual = indexIndividual
-        
+        indexOptimalIndividual = np.argmin(self.FitnessValuesPopulation)
         return self.Population[indexOptimalIndividual] , self.FitnessValuesPopulation[indexOptimalIndividual]
 
-    def SnapshotPopulation(self,NumberFunctionEvaluations_Generation:int) -> None:
+    def WriteSnapshot(self) -> None:
         """
-            Method to save a snapshot of the population at generation-st
-
-            -- NumberFunctionEvaluations_Generation:int :: Number of function 
-            evaluations at generation-st 
+            Method to save a snapshot of the optimal solution at iteration
         """
-        self.Generation += 1
-        self.Snapshots.append((self.Generation,NumberFunctionEvaluations_Generation,self.OptimalValue,self.OptimalIndividual,deepcopy(self.Population)))
+        self.Snapshots.append(self.OptimalValue)
 
     def FindOptimal(self,FunctionEvaluations:int) -> None:
         """
@@ -84,54 +75,58 @@ class DifferentialEvolution:
         """
         for numberFunctionEvaluation in range(FunctionEvaluations):
             indexIndividual = numberFunctionEvaluation%self.PopulationSize
-            self.IterativeImproveIndividual(indexIndividual)
 
-            if (numberFunctionEvaluation+1)%self.PopulationSize == 0:
-                self.SnapshotPopulation(numberFunctionEvaluation+1)
+            if indexIndividual == 0:
+                self.NextPopulation()
+
+            self.IterativeImproveIndividual(indexIndividual)
+            self.WriteSnapshot()
+        
+        del self.MutatedPopulation
+        del self.CrossoverPopulation
+        del self.FitnessCrossoverPopulation
+        del self.Population
     
-    def IterativeImproveIndividual(self,indexIndividual:int) -> None:
+    def NextPopulation(self) -> None:
+        """
+            Method to generate a mutated, crossover population 
+        """
+        self.MutationOperation()
+        self.CrossoverOperation()
+
+    def IterativeImproveIndividual(self,IndexIndividual:int) -> None:
         """
             Method to improve a given individual in the population
 
-            -- indexIndividual:int :: Individual's index to improve
+            -- IndexIndividual:int :: Individual's index to improve
         """
-        mutatedIndividual = self.MutationOperation()
-        crossoverIndividual = self.CrossoverOperation(indexIndividual,mutatedIndividual)
-        
-        if (fitnessValue:=self.ObjectiveFunction(crossoverIndividual)) <= self.FitnessValuesPopulation[indexIndividual]:
-            self.Population[indexIndividual] = crossoverIndividual
-            self.FitnessValuesPopulation[indexIndividual] = fitnessValue
-            if self.FitnessValuesPopulation[indexIndividual] < self.OptimalValue:
-                self.OptimalValue = self.FitnessValuesPopulation[indexIndividual]
-                self.OptimalIndividual = self.Population[indexIndividual]
-
-    def MutationOperation(self) -> np.ndarray:
-        """
-            Method to apply Differential Evolution Mutation Operation to a random individual
-
-            Return the mutated individual
-        """
-        randomIndex_1 , randomIndex_2 , randomIndex_3 = sample(range(self.PopulationSize),k=3)
-        randomIndividual_1 , randomIndividual_2 , randomIndividual_3 = self.Population[randomIndex_1] , self.Population[randomIndex_2] , self.Population[randomIndex_3]
-
-        return  randomIndividual_1 + self.ScalingFactor*(randomIndividual_2 - randomIndividual_3)
-
-    def CrossoverOperation(self,indexIndividual:int,mutatedIndividual:np.ndarray) -> np.ndarray:
-        """
-            Method to apply Differential Evolution Crossover Operation
+        if self.FitnessCrossoverPopulation[IndexIndividual] <= self.FitnessValuesPopulation[IndexIndividual]:
+            self.Population[IndexIndividual] = self.CrossoverPopulation[IndexIndividual]
+            self.FitnessValuesPopulation[IndexIndividual] = self.FitnessCrossoverPopulation[IndexIndividual]
             
-            -- indexIndividual:int :: Individual's index to be crossover
-            
-            -- mutantIndividual:np.ndarray :: Individual to be crossover
+            if self.FitnessValuesPopulation[IndexIndividual] < self.OptimalValue:
+                self.OptimalValue = self.FitnessValuesPopulation[IndexIndividual]
+                self.OptimalIndividual = self.Population[IndexIndividual]
 
-            Return the crossover individual product of base and mutated individuals 
+    def MutationOperation(self) -> None:
         """
-        baseIndividual = self.Population[indexIndividual]
-        crossoverIndividual = deepcopy(baseIndividual)
+            Method to apply Differential Evolution 
+            Mutation Operation to the population
+        """
+        self.MutatedPopulation = self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)]
+        self.MutatedPopulation += self.ScalingFactor*(self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)]-self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)])
 
-        indexMutated = randrange(0,len(crossoverIndividual))
-        for indexComponent , componentMutatedIndividual in enumerate(mutatedIndividual):
-            if (random() <= self.CrossoverRate) or (indexMutated == indexComponent):
-                crossoverIndividual[indexComponent] = componentMutatedIndividual
+    def CrossoverOperation(self) -> None:
+        """
+            Method to apply Differential Evolution 
+            Crossover Operation to the population
+        """
+        crossoverThreshold = np.random.random((self.PopulationSize,self.Dimension)) <= self.CrossoverRate
         
-        return crossoverIndividual
+        indexesMutated = np.random.randint(self.Dimension,size=self.PopulationSize)
+        crossoverThreshold[np.arange(self.PopulationSize),indexesMutated] = True
+        
+        self.CrossoverPopulation = self.Population.copy()
+        self.CrossoverPopulation[crossoverThreshold] = self.MutatedPopulation[crossoverThreshold]
+
+        self.FitnessCrossoverPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.CrossoverPopulation)
