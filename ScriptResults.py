@@ -2,7 +2,7 @@ from multiprocess import Pool
 
 from DifferentialEvolution.DispatchVariants import DifferentialEvolutionVariant
 
-from Results.FunctionsInitProblem import GetValidatedObjectiveFunction , ObjectiveFunctionCEC , Individual
+from Results.FunctionsInitProblem import GetValidatedObjectiveFunction , ObjectiveFunctionCEC , Population
 from Results.SimulationsCSV import SimulateOptimizer , ConvertResultsCSV , ConvertTimeExecutionCSV
 
 if __name__ == '__main__':
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     processes_jobs = 16
 
     lowerBound , upperBound = -100 , 100
-    initializeIndividual = Individual(lowerBound,upperBound,dimension)
+    initializePopulation = Population(lowerBound,upperBound,dimension)
 
     variantNames = ['Base','RandomSample','Agglomerative','RandomParameters']
     kwargs_Base = {
@@ -55,7 +55,7 @@ if __name__ == '__main__':
             timeExecution_Functions = []
             for functionNumber in validatedFunctionNumbers:
                 objectiveFunction = ObjectiveFunctionCEC(functionNumber,yearCEC,dimension)
-                optimizerDiffEvol = variantDiffEvol(objectiveFunction,initializeIndividual)
+                optimizerDiffEvol = variantDiffEvol(objectiveFunction,initializePopulation)
 
                 print(f'START F{functionNumber}')
                 simulationsFunctionEvaluations , simulationsOptimals , timeExecution = SimulateOptimizer(optimizerDiffEvol,kwargs_VariantDiffEvol[variantName],numberSimulations,poolExecutions)

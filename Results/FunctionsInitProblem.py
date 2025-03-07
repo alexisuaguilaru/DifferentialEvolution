@@ -49,7 +49,7 @@ def ObjectiveFunctionCEC(FunctionNumber:str,YearCEC:str='2017',Dimension:int=2) 
     
     return ObjectiveFunction_inner
 
-def Individual(LowerBound:float=-100,UpperBound:float=100,Dimension:int=2) -> Callable:
+def Population(LowerBound:float=-100,UpperBound:float=100,Dimension:int=2) -> Callable:
     """
         Function to create a random individual
         
@@ -61,13 +61,13 @@ def Individual(LowerBound:float=-100,UpperBound:float=100,Dimension:int=2) -> Ca
 
         Return a function to create a new random individual
     """
-    def Individual_inner() -> np.ndarray:
+    def Individuals(PopulationSize:int) -> np.ndarray:
         """
             Inner function to create a random individual with the given range
 
             Return a new random individual
         """
-        individual = np.random.default_rng().uniform(LowerBound,UpperBound,Dimension)
+        individual = np.random.uniform(LowerBound,UpperBound,size=(PopulationSize,Dimension))
         return individual
     
-    return Individual_inner
+    return Individuals
