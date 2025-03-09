@@ -21,19 +21,18 @@ class DifferentialEvolution_Agglomerative(DifferentialEvolution_Reduction):
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def GetClustersRepresentatives(self) -> list[list[np.ndarray,float]]:
-        populationFitness = np.concat([self.Population,np.reshape(self.FitnessValuesPopulation,shape=(self.PopulationSize,1))],axis=1)
+    def GetClustersRepresentatives(self) -> list[int]:
+        population_fitness = np.concat([self.Population,self.FitnessValuesPopulation.reshape((self.PopulationSize,1))],axis=1)
         numberClusters = self.PopulationSize//2
-        populationClusters = AgglomerativeClustering(n_clusters=numberClusters).fit_predict(populationFitness)
+        populationClusters = AgglomerativeClustering(n_clusters=numberClusters).fit_predict(population_fitness)
 
         individualsClusters = defaultdict(list)
-        for cluster , individualFitness in zip(populationClusters,populationFitness):
-            individual , fitnessValue = individualFitness[:-1] , individualFitness[-1]
-            individualsClusters[cluster].append([individual,fitnessValue])
+        for individual , label in zip(np.arange(self.PopulationSize),populationClusters):
+            individualsClusters[label].append(individual)
 
-        clustersRepresentativeIndividuals = []
+        indexRepresentative = []
         for individuals in individualsClusters.values():
-            bestIndividual = min(individuals,key=lambda individual:individual[1])
-            clustersRepresentativeIndividuals.append(bestIndividual)
+            indexBest = np.argmin(self.FitnessValuesPopulation[individuals])
+            indexRepresentative.append(individuals[indexBest])
 
-        return clustersRepresentativeIndividuals
+        return indexRepresentative
