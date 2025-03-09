@@ -19,7 +19,7 @@ class DifferentialEvolution_RandomParameters(DifferentialEvolution):
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,RangeScalingFactor:list[float,float]=[0,1],RangeCrossoverRate:list[float,float]=[0,1]) -> tuple[np.ndarray,list[list]]:
+    def __call__(self,FunctionEvaluations:int,PopulationSize:int,RangeScalingFactor:list[float,float]=[0,1],RangeCrossoverRate:list[float,float]=[0,1]) -> tuple[np.ndarray,list[float]]:
         """
             Method for searching optimal solution for objective function
             

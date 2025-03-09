@@ -1,4 +1,3 @@
-from math import ceil
 import numpy as np
 
 from typing import Callable
@@ -19,7 +18,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float,PercentageEvaluations:list[float]) -> tuple[np.ndarray,list[list]]:
+    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float,PercentageEvaluations:list[float]) -> tuple[np.ndarray,list[float]]:
         """
             Method for searching optimal solution for objective function
             
@@ -36,7 +35,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
 
             Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
         """
-        self.ApplyReductionEvaluations = set(ceil(FunctionEvaluations*percentage) for percentage in PercentageEvaluations)
+        self.ApplyReductionEvaluations = set(np.ceil(FunctionEvaluations*percentage) for percentage in PercentageEvaluations)
         return super().__call__(FunctionEvaluations,PopulationSize,ScalingFactor,CrossoverRate)
     
     def FindOptimal(self,FunctionEvaluations:int) -> None:
@@ -45,44 +44,32 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
 
             -- FunctionEvaluations:int :: Amount of function evaluations
         """
-        numberFunctionEvaluationInGeneration = 0
         for numberFunctionEvaluation in range(FunctionEvaluations):
-            indexIndividual = numberFunctionEvaluation%self.PopulationSize
-            self.IterativeImproveIndividual(indexIndividual)
-            
-            if (numberFunctionEvaluation+1) in self.ApplyReductionEvaluations:
+            if numberFunctionEvaluation in self.ApplyReductionEvaluations:
                 self.ApplyPopulationReduction()
-                self.SnapshotPopulation(numberFunctionEvaluation+1)
-                numberFunctionEvaluationInGeneration = -1
+                self.NextPopulation()
+                indexIndividual = numberFunctionEvaluation%self.PopulationSize
 
-            elif (numberFunctionEvaluationInGeneration+1)%self.PopulationSize == 0:
-                self.SnapshotPopulation(numberFunctionEvaluation+1)
-                numberFunctionEvaluationInGeneration = -1
-
-            numberFunctionEvaluationInGeneration += 1
-
-        if numberFunctionEvaluationInGeneration != 0:
-            self.SnapshotPopulation(numberFunctionEvaluation+1)
+            elif (indexIndividual:=numberFunctionEvaluation%self.PopulationSize) == 0:
+                self.NextPopulation()
+            
+            self.IterativeImproveIndividual(indexIndividual)
+            self.WriteSnapshot()
     
-    def ApplyPopulationReduction(self):
+    def ApplyPopulationReduction(self) -> None:
         """
             Method to apply a reduction of the population based 
             on some clustering algorithm
         """
-        clustersRepresentativeIndividuals = self.GetClustersRepresentatives()
+        indexRepresentative = self.GetClustersRepresentatives()
         
-        population = []
-        fitnessValuesPopulation = []
-        for individual , fitnessValue in clustersRepresentativeIndividuals:
-            population.append(individual)
-            fitnessValuesPopulation.append(fitnessValue)
-        
-        self.PopulationSize = len(population)
-        self.Population = np.array(population)
-        self.FitnessValuesPopulation = np.array(fitnessValuesPopulation)
+        self.PopulationSize = len(indexRepresentative)
+        self.Population = self.Population[indexRepresentative]
+        self.FitnessValuesPopulation = self.FitnessValuesPopulation[indexRepresentative]
+
         self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
 
-    def GetClustersRepresentatives(self) -> list[list[np.ndarray,float]]:
+    def GetClustersRepresentatives(self) -> list[int]:
         """
             Method to get the representative individuals 
             from each cluster using a given clustering algorithm 
