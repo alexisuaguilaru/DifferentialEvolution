@@ -81,11 +81,6 @@ class DifferentialEvolution:
 
             self.IterativeImproveIndividual(indexIndividual)
             self.WriteSnapshot()
-        
-        del self.MutatedPopulation
-        del self.CrossoverPopulation
-        del self.FitnessCrossoverPopulation
-        del self.Population
     
     def NextPopulation(self) -> None:
         """

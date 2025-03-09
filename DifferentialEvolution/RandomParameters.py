@@ -1,5 +1,4 @@
 import numpy as np
-from random import random
 
 from typing import Callable
 
@@ -34,22 +33,11 @@ class DifferentialEvolution_RandomParameters(DifferentialEvolution):
 
             Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
         """
-        self.DeltaRangeScalingFactor = RangeScalingFactor[1] - RangeScalingFactor[0]
-        self.IncrementRangeScalingFactor = RangeScalingFactor[0]
-        self.DeltaRangeCrossoverRate = RangeCrossoverRate[1] - RangeCrossoverRate[0]
-        self.IncrementRangeCrossoverRate = RangeCrossoverRate[0]
+        self.RangeScalingFactor = RangeScalingFactor
+        self.RangeCrossoverRate = RangeCrossoverRate
 
-        ScalingFactor , CrossoverRate = self.RandomizeParameters()
-        return super().__call__(FunctionEvaluations,PopulationSize,ScalingFactor,CrossoverRate)
+        return super().__call__(FunctionEvaluations,PopulationSize,-1,-1)
     
-    def RandomizeParameters(self) -> list[float,float]:
-        """
-            Method for randomizing scaling and crossover parameters
-
-            Return the new and random scaling and crossover parameters
-        """
-        return self.DeltaRangeScalingFactor*random() + self.IncrementRangeScalingFactor , self.DeltaRangeCrossoverRate*random() + self.IncrementRangeCrossoverRate
-
     def FindOptimal(self,FunctionEvaluations:int) -> None:
         """
             Method for finding the optimal solution for the objective function
@@ -58,8 +46,17 @@ class DifferentialEvolution_RandomParameters(DifferentialEvolution):
         """
         for numberFunctionEvaluation in range(FunctionEvaluations):
             indexIndividual = numberFunctionEvaluation%self.PopulationSize
-            self.IterativeImproveIndividual(indexIndividual)
 
-            if (numberFunctionEvaluation+1)%self.PopulationSize == 0:
-                self.SnapshotPopulation(numberFunctionEvaluation+1)
-                self.ScalingFactor , self.CrossoverRate = self.RandomizeParameters()
+            if indexIndividual == 0:
+                self.RandomizeParameters()
+                self.NextPopulation()
+
+            self.IterativeImproveIndividual(indexIndividual)
+            self.WriteSnapshot()
+
+    def RandomizeParameters(self) -> None:
+        """
+            Method for randomizing scaling and crossover parameters
+        """
+        self.ScalingFactor = np.random.uniform(*self.RangeScalingFactor)
+        self.CrossoverRate = np.random.uniform(*self.RangeCrossoverRate)
