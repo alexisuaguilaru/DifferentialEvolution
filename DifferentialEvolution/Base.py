@@ -16,7 +16,7 @@ class DifferentialEvolution:
         self.ObjectiveFunction = ObjectiveFunction
         self.InitializePopulation = InitializePopulation
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float) -> tuple[np.ndarray,list[list]]:
+    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float) -> tuple[np.ndarray,list[float]]:
         """
             Method for searching optimal solution for objective function
             
@@ -94,20 +94,6 @@ class DifferentialEvolution:
         self.MutationOperation()
         self.CrossoverOperation()
 
-    def IterativeImproveIndividual(self,IndexIndividual:int) -> None:
-        """
-            Method to improve a given individual in the population
-
-            -- IndexIndividual:int :: Individual's index to improve
-        """
-        if self.FitnessCrossoverPopulation[IndexIndividual] <= self.FitnessValuesPopulation[IndexIndividual]:
-            self.Population[IndexIndividual] = self.CrossoverPopulation[IndexIndividual]
-            self.FitnessValuesPopulation[IndexIndividual] = self.FitnessCrossoverPopulation[IndexIndividual]
-            
-            if self.FitnessValuesPopulation[IndexIndividual] < self.OptimalValue:
-                self.OptimalValue = self.FitnessValuesPopulation[IndexIndividual]
-                self.OptimalIndividual = self.Population[IndexIndividual]
-
     def MutationOperation(self) -> None:
         """
             Method to apply Differential Evolution 
@@ -130,3 +116,17 @@ class DifferentialEvolution:
         self.CrossoverPopulation[crossoverThreshold] = self.MutatedPopulation[crossoverThreshold]
 
         self.FitnessCrossoverPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.CrossoverPopulation)
+
+    def IterativeImproveIndividual(self,IndexIndividual:int) -> None:
+        """
+            Method to improve a given individual in the population
+
+            -- IndexIndividual:int :: Individual's index to improve
+        """
+        if self.FitnessCrossoverPopulation[IndexIndividual] <= self.FitnessValuesPopulation[IndexIndividual]:
+            self.Population[IndexIndividual] = self.CrossoverPopulation[IndexIndividual]
+            self.FitnessValuesPopulation[IndexIndividual] = self.FitnessCrossoverPopulation[IndexIndividual]
+            
+            if self.FitnessValuesPopulation[IndexIndividual] < self.OptimalValue:
+                self.OptimalValue = self.FitnessValuesPopulation[IndexIndividual]
+                self.OptimalIndividual = self.Population[IndexIndividual]
