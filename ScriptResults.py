@@ -14,20 +14,27 @@ if __name__ == '__main__':
     lowerBound , upperBound = -100 , 100
     initializePopulation = Population(lowerBound,upperBound,dimension)
 
-    variantNames = ['Base','RandomSample','Agglomerative','RandomParameters']
+    variantNames = ['Base','FixedRandomSample','ProportionalRandomSample','Agglomerative','RandomParameters']
     kwargs_Base = {
                     'FunctionEvaluations': 5000,
                     'PopulationSize': 100,
                     'ScalingFactor': 0.5,
                     'CrossoverRate': 0.5
                   }
-    kwargs_RandomSample = { 
-        					'FunctionEvaluations': 5000,
-                    		'PopulationSize': 100,
-                    		'ScalingFactor': 0.5,
-                    		'CrossoverRate': 0.5,
-                            'PercentageEvaluations': [0.5]
-    					  }
+    kwargs_FixedRandomSample = { 
+        					     'FunctionEvaluations': 5000,
+                    		     'PopulationSize': 100,
+                    		     'ScalingFactor': 0.5,
+                    		     'CrossoverRate': 0.5,
+                                 'PercentageEvaluations': [0.5]
+    					       }
+    kwargs_ProportionalRandomSample = { 
+        					            'FunctionEvaluations': 5000,
+                    		            'PopulationSize': 100,
+                    		            'ScalingFactor': 0.5,
+                    		            'CrossoverRate': 0.5,
+                                        'PercentageEvaluations': [0.5]
+    					              }
     kwargs_Agglomerative = {
         					 'FunctionEvaluations': 5000,
                     		 'PopulationSize': 100,
@@ -41,14 +48,15 @@ if __name__ == '__main__':
                                 'RangeScalingFactor': [0.4,0.6],
                                 'RangeCrossoverRate': [0.4,0.6]
                   			  }
-    kwargs_VariantDiffEvol = {variantName:kwargs_Variant for variantName , kwargs_Variant in zip(variantNames,[kwargs_Base,kwargs_RandomSample,kwargs_Agglomerative,kwargs_RandomParameters])}
+    kwargs_VariantDiffEvol = {variantName:kwargs_Variant for variantName , kwargs_Variant in zip(variantNames,[kwargs_Base,kwargs_FixedRandomSample,kwargs_ProportionalRandomSample,kwargs_Agglomerative,kwargs_RandomParameters])}
 
     validatedFunctionNumbers = GetValidatedObjectiveFunction(yearCEC,dimension)
 	
-    with Pool(processes_jobs) as poolExecutions:
-        timeExecution_VariantFunctions = dict()
-        for variantName in variantNames:
-            print(f'START :: {variantName}\n')
+    print("\nSTART SIMULATIONS/RUNS")
+    timeExecution_VariantFunctions = dict()
+    for variantName in variantNames:
+        print(f'START :: {variantName}\n')
+        with Pool(processes_jobs) as poolExecutions:
 
             variantDiffEvol = DifferentialEvolutionVariant(variantName)
 
@@ -58,16 +66,15 @@ if __name__ == '__main__':
                 optimizerDiffEvol = variantDiffEvol(objectiveFunction,initializePopulation)
 
                 print(f'START F{functionNumber}')
-                simulationsFunctionEvaluations , simulationsOptimals , timeExecution = SimulateOptimizer(optimizerDiffEvol,kwargs_VariantDiffEvol[variantName],numberSimulations,poolExecutions)
+                simulationsResultsOptimal , timeExecution = SimulateOptimizer(optimizerDiffEvol,kwargs_VariantDiffEvol[variantName],numberSimulations,poolExecutions)
                 print(f'FINISH F{functionNumber}. {timeExecution}sec\n')
 
                 timeExecution_Functions.append(timeExecution)
 
-                ConvertResultsCSV(variantName,simulationsFunctionEvaluations,'F',functionNumber,dimension,yearCEC)
-                ConvertResultsCSV(variantName,simulationsOptimals,'O',functionNumber,dimension,yearCEC)
+                ConvertResultsCSV(variantName,simulationsResultsOptimal,functionNumber,dimension,yearCEC)
 
             timeExecution_VariantFunctions[variantName] = timeExecution_Functions
 
-            print(f'END :: {variantName}\n')
+        print(f'END :: {variantName}\n')
     
     ConvertTimeExecutionCSV(timeExecution_VariantFunctions,validatedFunctionNumbers,dimension,yearCEC)
