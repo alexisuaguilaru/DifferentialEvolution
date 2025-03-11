@@ -35,28 +35,17 @@ def SimulateOptimizer(Optimizer:Callable,KwargsOptimizer:dict,NumberSimulations:
             Return a list with the relevant results at each generation
         """
         _ , snapshots = Optimizer(**KwargsOptimizer)
-        
-        functionEvaluations_Optimals = []
-        for snapshot in snapshots:
-            functionEvaluations_Optimals.append([snapshot[1],snapshot[2]])
-        
-        return functionEvaluations_Optimals
+        return snapshots
 
     startTime = time()
     simulationResults = PoolExecutions.map(FunctionOptimizer,[KwargsOptimizer for _ in range(NumberSimulations)])
     endTime = time()
 
-    simulationsFunctionEvaluations = []
-    simulationsOptimals = []
-    for simulationResult in simulationResults:
-        simulationsFunctionEvaluations.append([generation[0] for generation in simulationResult])
-        simulationsOptimals.append([generation[1] for generation in simulationResult])
-
     timeExecution = endTime - startTime
 
-    return simulationsFunctionEvaluations , simulationsOptimals , timeExecution
+    return simulationResults , timeExecution
 
-def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:str,FunctionNumber:str,Dimension:int,YearCEC:str) -> None:
+def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],FunctionNumber:str,Dimension:int,YearCEC:str) -> None:
     """
         Function for converting a list of results into a csv file
 
@@ -64,15 +53,13 @@ def ConvertResultsCSV(OptimizerName:str,SimulationResults:list[list],TypeResult:
     
         -- SimulationResults:list :: Results to convert
         
-        -- TypeResult:str :: Type of result. Function evaluations or optimal values
-        
         -- FunctionNumber:str :: Function's name associated to results
         
         -- Dimension:int :: Problem's dimension
         
         -- YearCEC:str :: CEC problem's year
     """
-    fileName = f'FunctionEvaluations_F{FunctionNumber}' if TypeResult == 'F' else f'Optimals_F{FunctionNumber}'
+    fileName = f'OptimalValues_F{FunctionNumber}'
 
     try:
         os.open(f'Results/CEC_{YearCEC}/Dim_{Dimension}/{OptimizerName}')
@@ -92,13 +79,13 @@ def ConvertTimeExecutionCSV(TimeExecution_VariantFunctions:dict[str,list[float]]
     """
         Function for converting time execution results by variant and function into csv file
     
-        -- TimeExecution_VariantFunctions:dict :: 
+        -- TimeExecution_VariantFunctions:dict :: Results of time execution by variant and function
         
-        -- FunctionNumbers:list :: 
+        -- FunctionNumbers:list :: Objective functions names
         
-        -- Dimension:int :: 
+        -- Dimension:int :: Dimension problem
         
-        -- YearCEC:str :: 
+        -- YearCEC:str :: CEC's year
     """
     indexDataFrame_TimeExecution = [f'F{functionNumber}' for functionNumber in FunctionNumbers]
     pd.DataFrame(TimeExecution_VariantFunctions,index=indexDataFrame_TimeExecution).to_csv(f'Results/CEC_{YearCEC}/Dim_{Dimension}/TimeExecution_Results.csv')
