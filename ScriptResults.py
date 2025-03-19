@@ -16,34 +16,34 @@ if __name__ == '__main__':
 
     variantNames = ['Base','FixedRandomSample','ProportionalRandomSample','Agglomerative','RandomParameters']
     kwargs_Base = {
-                    'FunctionEvaluations': 5000,
+                    'FunctionEvaluations': 10000,
                     'PopulationSize': 100,
                     'ScalingFactor': 0.5,
                     'CrossoverRate': 0.5
                   }
     kwargs_FixedRandomSample = { 
-        					     'FunctionEvaluations': 5000,
+        					     'FunctionEvaluations': 10000,
                     		     'PopulationSize': 100,
                     		     'ScalingFactor': 0.5,
                     		     'CrossoverRate': 0.5,
                                  'PercentageEvaluations': [0.5]
     					       }
     kwargs_ProportionalRandomSample = { 
-        					            'FunctionEvaluations': 5000,
+        					            'FunctionEvaluations': 10000,
                     		            'PopulationSize': 100,
                     		            'ScalingFactor': 0.5,
                     		            'CrossoverRate': 0.5,
                                         'PercentageEvaluations': [0.5]
     					              }
     kwargs_Agglomerative = {
-        					 'FunctionEvaluations': 5000,
+        					 'FunctionEvaluations': 10000,
                     		 'PopulationSize': 100,
                     		 'ScalingFactor': 0.5,
                     		 'CrossoverRate': 0.5,
                              'PercentageEvaluations': [0.25,0.5,0.75]
     					   }
     kwargs_RandomParameters = {
-                    			'FunctionEvaluations': 5000,
+                    			'FunctionEvaluations': 10000,
                     			'PopulationSize': 100,
                                 'RangeScalingFactor': [0.4,0.6],
                                 'RangeCrossoverRate': [0.4,0.6]
@@ -61,7 +61,7 @@ if __name__ == '__main__':
             variantDiffEvol = DifferentialEvolutionVariant(variantName)
 
             timeExecution_Functions = []
-            for functionNumber in validatedFunctionNumbers:
+            for functionNumber in validatedFunctionNumbers[5:6]:
                 objectiveFunction = ObjectiveFunctionCEC(functionNumber,yearCEC,dimension)
                 optimizerDiffEvol = variantDiffEvol(objectiveFunction,initializePopulation)
 
@@ -77,4 +77,5 @@ if __name__ == '__main__':
 
         print(f'END :: {variantName}\n')
     
-    ConvertTimeExecutionCSV(timeExecution_VariantFunctions,validatedFunctionNumbers,dimension,yearCEC)
+    print(timeExecution_VariantFunctions)
+    # ConvertTimeExecutionCSV(timeExecution_VariantFunctions,validatedFunctionNumbers,dimension,yearCEC)
