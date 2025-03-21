@@ -61,7 +61,7 @@ if __name__ == '__main__':
             variantDiffEvol = DifferentialEvolutionVariant(variantName)
 
             timeExecution_Functions = []
-            for functionNumber in validatedFunctionNumbers[5:6]:
+            for functionNumber in validatedFunctionNumbers:
                 objectiveFunction = ObjectiveFunctionCEC(functionNumber,yearCEC,dimension)
                 optimizerDiffEvol = variantDiffEvol(objectiveFunction,initializePopulation)
 
@@ -77,5 +77,5 @@ if __name__ == '__main__':
 
         print(f'END :: {variantName}\n')
     
-    print(timeExecution_VariantFunctions)
-    # ConvertTimeExecutionCSV(timeExecution_VariantFunctions,validatedFunctionNumbers,dimension,yearCEC)
+    # print(timeExecution_VariantFunctions)
+    ConvertTimeExecutionCSV(timeExecution_VariantFunctions,validatedFunctionNumbers,dimension,yearCEC)
