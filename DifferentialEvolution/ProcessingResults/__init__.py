@@ -1,1 +1,1 @@
-from .Results import ResumeResults
+from .Results import SummaryResults

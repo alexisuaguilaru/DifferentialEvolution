@@ -1,4 +1,4 @@
-from DifferentialEvolution import DifferentialEvolutionVariant , ResumeResults
+from DifferentialEvolution import DifferentialEvolutionVariant , SummaryResults
 from TestingFunctions import GetValidatedObjectiveFunction , ObjectiveFunctionCEC , Population
 
 if __name__ == '__main__':
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         dir_results = DIR_RESULTS + f'{variant_name}/'
         for function_number in validated_function_numbers[:2]:
             objective_function = ObjectiveFunctionCEC(function_number,YEAR_CEC,DIMENSION)
-            simulation_results = ResumeResults(variant_diff_evol,objective_function,initialize_population)
+            simulation_results = SummaryResults(variant_diff_evol,objective_function,initialize_population)
 
             print(f'START F{function_number}')
             name_results = f'F{function_number}.csv'

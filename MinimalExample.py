@@ -1,6 +1,6 @@
 import numpy as np
 
-from DifferentialEvolution import DifferentialEvolutionVariant , ResumeResults
+from DifferentialEvolution import DifferentialEvolutionVariant , SummaryResults
 
 # Create or define some objective function 
 def ObjectiveFunction(Solution:np.ndarray) -> float:
@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     # Init class to get results with optimizer (differential 
     # evolution), objective function and function to init population
-    get_results = ResumeResults(optimizer,ObjectiveFunction,InitPopulation)
+    get_results = SummaryResults(optimizer,ObjectiveFunction,InitPopulation)
 
 
     # Define arguments for save simulations/results and threading
