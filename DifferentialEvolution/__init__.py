@@ -1,1 +1,2 @@
 from .Variants import DifferentialEvolutionVariant
+from .ProcessingResults import ResumeResults
