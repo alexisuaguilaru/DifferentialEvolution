@@ -19,8 +19,6 @@ class ResumeResults:
         end_time = time()
 
         processed_results = self.ProcessResults(results_simulations)
-        print((processed_results).shape)
-        print(processed_results[:,-1])
         
         self.DirResults = DirResults
         self.NameResults = NameResults
