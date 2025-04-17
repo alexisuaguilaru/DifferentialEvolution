@@ -1,0 +1,9 @@
+Results/**
+__pycache__/**
+-pytest_cache/**
+__trash__/**
+tmp/**
+*.csv
+*.zip
+*.ipynb
+*.log

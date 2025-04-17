@@ -27,7 +27,7 @@ if __name__ == '__main__':
         variant_diff_evol = DifferentialEvolutionVariant(variant_name)
 
         dir_results = DIR_RESULTS + f'{variant_name}/'
-        for function_number in validated_function_numbers[:2]:
+        for function_number in validated_function_numbers:
             objective_function = ObjectiveFunctionCEC(function_number,YEAR_CEC,DIMENSION)
             simulation_results = SummaryResults(variant_diff_evol,objective_function,initialize_population)
 

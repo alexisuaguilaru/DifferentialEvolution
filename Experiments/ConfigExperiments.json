@@ -3,7 +3,7 @@
     "DIMENSION" : 2 , 
     "DIR_RESULTS" : "./Experiments/" , 
     "NUMBER_SIMULATIONS" : 1000 , 
-    "THREADS_JOBS" : 4 , 
+    "THREADS_JOBS" : -1 , 
     "lower_bound" : -100 , 
     "upper_bound" : 100 , 
     "kwargs_universal" : {

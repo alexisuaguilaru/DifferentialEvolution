@@ -1,10 +1,10 @@
-FROM python:3.12.5-alpine
+FROM python:3.12.5-slim-bookworm
 WORKDIR /DIFF_EVOL
 
 # Install requirements
 COPY ./requirements.txt .
 RUN pip install --upgrade pip
-RUN pip install -r 
+RUN pip install -r requirements.txt
 RUN pip install --ignore-requires-python opfunu==1.0.4
 
 # Copy necessary code and function
