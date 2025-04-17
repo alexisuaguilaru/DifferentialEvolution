@@ -1,0 +1,52 @@
+{
+    "YEAR_CEC" : "2017" , 
+    "DIMENSION" : 2 , 
+    "DIR_RESULTS" : "./Experiments/" , 
+    "NUMBER_SIMULATIONS" : 1000 , 
+    "THREADS_JOBS" : 4 , 
+    "lower_bound" : -100 , 
+    "upper_bound" : 100 , 
+    "kwargs_universal" : {
+        "FunctionEvaluations" : 10000 , 
+        "PopulationSize" : 100
+    } ,
+    "Variants" : {
+        "Base" : {
+            "ScalingFactor" : 0.5 , 
+            "CrossoverRate" : 0.5
+        } , 
+        "FixedRandomSample" : {
+            "ScalingFactor" : 0.5 , 
+            "CrossoverRate" : 0.5 , 
+            "PercentageEvaluations" : [
+                0.5
+            ]
+        } , 
+        "ProportionalRandomSample" : {
+            "ScalingFactor" : 0.5 , 
+            "CrossoverRate" : 0.5 , 
+            "PercentageEvaluations" : [
+                0.5
+            ]
+        } , 
+        "Agglomerative" : { 
+            "ScalingFactor" : 0.5 , 
+            "CrossoverRate" : 0.5 , 
+            "PercentageEvaluations" : [
+                0.25 , 
+                0.5 , 
+                0.75
+            ]
+        } , 
+        "RandomParameters" : {
+            "RangeScalingFactor" : [
+                0.4 , 
+                0.6
+            ] , 
+            "RangeCrossoverRate" : [
+                0.4 , 
+                0.6
+            ]
+        }
+    }
+}
