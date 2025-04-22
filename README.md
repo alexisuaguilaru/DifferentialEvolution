@@ -28,7 +28,7 @@ docker build -t diff_evol .
 ```
 Subsequently, the configuration file will have to be modified to adapt it to the experiment or simulations to be executed. Finally, the container is executed with:
 ```bash
-docker run --rm -v ./Experiments:/DIFF_EVOL/Experiments diff_evol
+docker run -d -it --rm -v ./Experiments:/DIFF_EVOL/Experiments diff_evol
 ```
 </details>
 

@@ -1,6 +1,6 @@
 {
     "YEAR_CEC" : "2017" , 
-    "DIMENSION" : 2 , 
+    "DIMENSION" : 10 , 
     "DIR_RESULTS" : "./Experiments/" , 
     "NUMBER_SIMULATIONS" : 1000 , 
     "THREADS_JOBS" : -1 , 
