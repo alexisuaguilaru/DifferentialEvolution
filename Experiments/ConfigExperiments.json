@@ -1,15 +1,21 @@
 {
     "YEAR_CEC" : "2017" , 
     "DIMENSION" : 10 , 
-    "DIR_RESULTS" : "./Experiments/" , 
     "NUMBER_SIMULATIONS" : 1000 , 
-    "THREADS_JOBS" : -1 , 
+    "THREADS_JOBS" : 8 , 
     "lower_bound" : -100 , 
     "upper_bound" : 100 , 
-    "kwargs_universal" : {
-        "FunctionEvaluations" : 10000 , 
-        "PopulationSize" : 100
-    } ,
+    "FunctionEvaluations" : 10000 , 
+    "PopulationSize" : [
+        12 , 
+        25 ,
+        37 ,
+        50 ,
+        62 ,
+        75 ,
+        87 ,
+        100
+    ],
     "Variants" : {
         "Base" : {
             "ScalingFactor" : 0.5 , 

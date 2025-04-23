@@ -1,2 +1,2 @@
 from .Variants import DifferentialEvolutionVariant
-from .ProcessingResults import SummaryResults
+from .ProcessingResults import SummaryResults , CompressSummaryResults

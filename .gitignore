@@ -2,4 +2,7 @@
 *.ipynb
 *.csv
 __trash__
-.pytest_cache
+*.pytest_cache
+*.zip
+
+*.md
