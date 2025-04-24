@@ -51,11 +51,15 @@ class SummaryResults:
 
         processed_results = self.ProcessResults(results_simulations)
         
-        self.DirResults = DirResults
-        self.NameResults = NameResults
-        self.SaveResults(processed_results)
+        if DirResults != '.':
+            self.NameResults = NameResults
+            self.DirResults = DirResults
+            self.SaveResults(processed_results)
 
-        return end_time-start_time
+            return end_time-start_time
+    
+        else:
+            return processed_results[2]
 
     def GetResults(self,SimulationTimes:int,ThreadPool:int) -> list[np.ndarray]:
         """
