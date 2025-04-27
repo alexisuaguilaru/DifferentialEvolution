@@ -42,4 +42,4 @@ if __name__ == '__main__':
             print(f'END :: {variant_name}\n')
 
         print("START COMPRESSION OF RESULTS\n")
-        CompressSummaryResults(Dimension=DIMENSION,PopulationSize=population_size)
+        CompressSummaryResults(Dimension=DIMENSION,PopulationSize=population_size,VariantNames=Configuration['Variants'].keys())
