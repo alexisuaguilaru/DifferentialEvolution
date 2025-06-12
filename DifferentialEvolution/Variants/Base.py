@@ -5,7 +5,11 @@ from .Abstract import AbstractDifferentialEvolution
 from typing import Callable
 
 class DifferentialEvolution(AbstractDifferentialEvolution):
-    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
+    def __init__(
+            self,
+            ObjectiveFunction:Callable,
+            InitializeIndividual:Callable,
+        ):
         """
         Class for Differential Evolution Metaheuristic. Based on 
         DE/rand/1/bin using number of function evaluations instead 
@@ -24,7 +28,13 @@ class DifferentialEvolution(AbstractDifferentialEvolution):
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,RangeScalingFactor:tuple[float,float]|float=[0,1],RangeCrossoverRate:tuple[float,float]|float=[0,1]) -> tuple[np.ndarray,list[float]]:
+    def __call__(
+            self,
+            FunctionEvaluations:int,
+            PopulationSize:int,
+            RangeScalingFactor:tuple[float,float]|float=[0,1],
+            RangeCrossoverRate:tuple[float,float]|float=[0,1],
+        ) -> tuple[np.ndarray,list[float]]:
         """
         Method for searching optimal solution for a give objective 
         function. Return the best optimal solution, because of 
@@ -54,7 +64,10 @@ class DifferentialEvolution(AbstractDifferentialEvolution):
 
         return super().__call__(FunctionEvaluations,PopulationSize,-1,-1)
     
-    def ValidateRangeParameter(self,RangeParameter:tuple[float,float]|float) -> tuple[float,float]:
+    def ValidateRangeParameter(
+            self,
+            RangeParameter:tuple[float,float]|float,
+        ) -> tuple[float,float]:
         """
         Method for validate a range of values for a 
         parameter. If it is a float, returns a 
@@ -75,7 +88,10 @@ class DifferentialEvolution(AbstractDifferentialEvolution):
             RangeParameter = (RangeParameter,RangeParameter)
         return RangeParameter
 
-    def FindOptimal(self,FunctionEvaluations:int) -> None:
+    def FindOptimal(
+            self,
+            FunctionEvaluations:int,
+        ) -> None:
         """
         Method for finding the optimal solution 
         for the objective function
@@ -96,7 +112,9 @@ class DifferentialEvolution(AbstractDifferentialEvolution):
             self.IterativeImproveIndividual(indexIndividual)
             self.WriteSnapshot()
 
-    def RandomizeParameters(self) -> None:
+    def RandomizeParameters(
+            self,
+        ) -> None:
         """
         Method for randomizing scaling and crossover parameters
         """

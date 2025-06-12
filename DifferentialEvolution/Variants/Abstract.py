@@ -2,7 +2,11 @@ import numpy as np
 from typing import Callable
 
 class AbstractDifferentialEvolution:
-    def __init__(self,ObjectiveFunction:Callable,InitializePopulation:Callable):
+    def __init__(
+            self,
+            ObjectiveFunction:Callable,
+            InitializePopulation:Callable,
+        ):
         """
         Abstract Class for implementation for variants of 
         Differential Evolution Metaheuristic. Based on 
@@ -20,7 +24,13 @@ class AbstractDifferentialEvolution:
         self.ObjectiveFunction = ObjectiveFunction
         self.InitializePopulation = InitializePopulation
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float) -> tuple[np.ndarray,list[float]]:
+    def __call__(
+            self,
+            FunctionEvaluations:int,
+            PopulationSize:int,
+            ScalingFactor:float,
+            CrossoverRate:float,
+        ) -> tuple[np.ndarray,list[float]]:
         """
         Method for searching optimal solution for a give objective 
         function. Return the best optimal solution, because of 
@@ -63,7 +73,9 @@ class AbstractDifferentialEvolution:
         
         return self.OptimalIndividual , self.Snapshots
 
-    def InitializeOptimization(self) -> None:
+    def InitializeOptimization(
+            self,
+        ) -> None:
         """
         Method to initialize Population and 
         FitnessValuesPopulation attributes  
@@ -73,13 +85,15 @@ class AbstractDifferentialEvolution:
 
         self.PopulationIndexes = np.arange(self.PopulationSize)
 
-    def BestOptimalIndividual(self) -> tuple[np.ndarray,float]:
+    def BestOptimalIndividual(
+            self,
+        ) -> tuple[np.ndarray,float]:
         """
         Method for finding the best optimal individual up to the current generation 
             
         Returns
         -------
-        BestOptimalSoluton : np.ndarray
+        BestOptimalSolution : np.ndarray
             Current best optimal solution
         
         BestOptimalValue : float
@@ -88,14 +102,19 @@ class AbstractDifferentialEvolution:
         indexOptimalIndividual = np.argmin(self.FitnessValuesPopulation)
         return self.Population[indexOptimalIndividual] , self.FitnessValuesPopulation[indexOptimalIndividual]
 
-    def WriteSnapshot(self) -> None:
+    def WriteSnapshot(
+            self,
+        ) -> None:
         """
         Method to save a snapshot of the optimal/best 
         value at current iteration
         """
         self.Snapshots.append(self.OptimalValue)
 
-    def FindOptimal(self,FunctionEvaluations:int) -> None:
+    def FindOptimal(
+            self,
+            FunctionEvaluations:int,
+        ) -> None:
         """
         Method for finding the optimal solution 
         for the objective function
@@ -115,7 +134,9 @@ class AbstractDifferentialEvolution:
             self.IterativeImproveIndividual(indexIndividual)
             self.WriteSnapshot()    
 
-    def MutationOperation(self) -> None:
+    def MutationOperation(
+            self,
+        ) -> None:
         """
         Method to apply Differential Evolution 
         Mutation Operation to the population
@@ -123,21 +144,25 @@ class AbstractDifferentialEvolution:
         self.MutatedPopulation = self.RandomSampleSolutions()
         self.MutatedPopulation += self.ScalingFactor*(self.RandomSampleSolutions()-self.RandomSampleSolutions())
 
-    def RandomSampleSolutions(self) -> np.ndarray:
+    def RandomSampleSolutions(
+            self,
+        ) -> np.ndarray:
         """
         Method to get a sample of random individuals 
         from the population of solutions
 
         Return
         ------
-        RandomSamplint : np.ndarray
+        RandomSampling : np.ndarray
             A random sample of solutions from 
             the population of solutions
         """
         randomIndexes =  np.random.randint(self.PopulationSize,size=self.PopulationSize)
         return self.Population[randomIndexes]
 
-    def CrossoverOperation(self) -> None:
+    def CrossoverOperation(
+            self,
+        ) -> None:
         """
         Method to apply Differential Evolution 
         Crossover Operation to the population
@@ -152,7 +177,10 @@ class AbstractDifferentialEvolution:
 
         self.FitnessCrossoverPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.CrossoverPopulation)
 
-    def IterativeImproveIndividual(self,IndexIndividual:int) -> None:
+    def IterativeImproveIndividual(
+            self,
+            IndexIndividual:int,
+        ) -> None:
         """
         Method to improve a given individual in the population
 
