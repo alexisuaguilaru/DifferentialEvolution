@@ -1,7 +1,6 @@
 from .Base import DifferentialEvolution
 from .RandomSample import DifferentialEvolution_FixedRandomSample , DifferentialEvolution_ProportionalRandomSample
 from .Agglomerative import DifferentialEvolution_Agglomerative
-from .RandomParameters import DifferentialEvolution_RandomParameters
 
 def DifferentialEvolutionVariant(Variant:str):
     """
@@ -24,6 +23,5 @@ __DifferentialEvolutionVariant = {
     'Base' : DifferentialEvolution, 
     'FixedRandomSample' : DifferentialEvolution_FixedRandomSample, 
     'ProportionalRandomSample' : DifferentialEvolution_ProportionalRandomSample, 
-    'Agglomerative' : DifferentialEvolution_Agglomerative, 
-    'RandomParameters' : DifferentialEvolution_RandomParameters, 
+    'Agglomerative' : DifferentialEvolution_Agglomerative,
 }

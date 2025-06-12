@@ -1,127 +1,104 @@
 import numpy as np
 
+from .Abstract import AbstractDifferentialEvolution
+
 from typing import Callable
 
-class DifferentialEvolution:
-    def __init__(self,ObjectiveFunction:Callable,InitializePopulation:Callable):
+class DifferentialEvolution(AbstractDifferentialEvolution):
+    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
         """
-            Class for Differential Evolution Metaheuristic
+        Class for Differential Evolution Metaheuristic. Based on 
+        DE/rand/1/bin using number of function evaluations instead 
+        of iterations.
+
+        Where its parameters (scaling factor and crossover rate)
+        are randoms in each generation optionally
             
-            -- ObjectiveFunction:Callable :: Function being optimized 
+        Parameters
+        ----------
+        ObjectiveFunction : Callable 
+            Function being optimized 
 
-            -- InitializeIndividual:Callable :: Function to create individuals
+        InitializeIndividual : Callable 
+            Function to create individuals
+        """
+        super().__init__(ObjectiveFunction,InitializeIndividual)
 
-            Based on DE/rand/1/bin using number of function evaluations instead of iterations
+    def __call__(self,FunctionEvaluations:int,PopulationSize:int,RangeScalingFactor:tuple[float,float]|float=[0,1],RangeCrossoverRate:tuple[float,float]|float=[0,1]) -> tuple[np.ndarray,list[float]]:
         """
-        self.ObjectiveFunction = ObjectiveFunction
-        self.InitializePopulation = InitializePopulation
+        Method for searching optimal solution for a give objective 
+        function. Return the best optimal solution, because of 
+        implementation will be the minimum.
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float) -> tuple[np.ndarray,list[float]]:
-        """
-            Method for searching optimal solution for objective function
-            
-            -- FunctionEvaluations:int :: Amount of function evaluations
-            
-            -- PopulationSize:int :: Parameter NP. Size of solutions population
-            
-            -- ScalingFactor:float :: Parameter F. Scaling factor for difference vector 
-            
-            -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
+        If both numbers in one of the ranges are equal, the parameter 
+        is no random.
 
-            Return the best optimal solution, because of implementation will be the minimum, and snapshots of the optimal at each function evaluation
-        """
-        self.PopulationSize = PopulationSize
-        self.ScalingFactor = ScalingFactor
-        self.CrossoverRate = CrossoverRate
-        
-        self.InitializeOptimization()
-        self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
-        self.Dimension = self.OptimalIndividual.shape[0]
+        Parameters
+        ----------
+        FunctionEvaluations : int 
+            Number of function evaluations
 
-        self.Snapshots = []
-        self.WriteSnapshot()
+        PopulationSize : int 
+            Parameter NP. Size of population of solutions
 
-        self.FindOptimal(FunctionEvaluations)
-        
-        return self.OptimalIndividual , self.Snapshots
+        RangeScalingFactor : tuple[float,float] | float
+            Range of values for Parameter F. Scaling factor 
+            for difference between vector.
 
-    def InitializeOptimization(self) -> None:
+        RangeCrossoverRate : tuple[float,float] | float
+            Range of values for Parameter Cr. Crossover rate 
+            for crossover operation
         """
-            Method to initialize Population and FitnessValuesPopulation attributes  
-        """
-        self.Population = self.InitializePopulation(self.PopulationSize)
-        self.FitnessValuesPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.Population)
+        self.RangeScalingFactor = self.ValidateRangeParameter(RangeScalingFactor)
+        self.RangeCrossoverRate = self.ValidateRangeParameter(RangeCrossoverRate)
 
-    def BestOptimalIndividual(self) -> tuple[np.ndarray,float]:
+        return super().__call__(FunctionEvaluations,PopulationSize,-1,-1)
+    
+    def ValidateRangeParameter(self,RangeParameter:tuple[float,float]|float) -> tuple[float,float]:
         """
-            Method for finding the best optimal individual up to the current generation 
-            
-            Return the best optimal found's individual and function value
-        """
-        indexOptimalIndividual = np.argmin(self.FitnessValuesPopulation)
-        return self.Population[indexOptimalIndividual] , self.FitnessValuesPopulation[indexOptimalIndividual]
+        Method for validate a range of values for a 
+        parameter. If it is a float, returns a 
+        validated range.
 
-    def WriteSnapshot(self) -> None:
+        Parameter
+        --------
+        RangeParameter : tuple[float,float] | float
+            Range of values being validated. It can 
+            be a tuple of values or a float
+
+        Return
+        ------
+        RangeParameter : tuple[float,float]
+            A validated range of values
         """
-            Method to save a snapshot of the optimal solution at iteration
-        """
-        self.Snapshots.append(self.OptimalValue)
+        if type(RangeParameter) == float:
+            RangeParameter = (RangeParameter,RangeParameter)
+        return RangeParameter
 
     def FindOptimal(self,FunctionEvaluations:int) -> None:
         """
-            Method for finding the optimal solution for the objective function
+        Method for finding the optimal solution 
+        for the objective function
 
-            -- FunctionEvaluations:int :: Amount of function evaluations
+        Parameter
+        ---------
+        FunctionEvaluations : int
+            Number of function evaluations
         """
         for numberFunctionEvaluation in range(FunctionEvaluations):
             indexIndividual = numberFunctionEvaluation%self.PopulationSize
 
             if indexIndividual == 0:
-                self.NextPopulation()
+                self.RandomizeParameters()
+                self.MutationOperation()
+                self.CrossoverOperation()
 
             self.IterativeImproveIndividual(indexIndividual)
             self.WriteSnapshot()
-    
-    def NextPopulation(self) -> None:
-        """
-            Method to generate a mutated, crossover population 
-        """
-        self.MutationOperation()
-        self.CrossoverOperation()
 
-    def MutationOperation(self) -> None:
+    def RandomizeParameters(self) -> None:
         """
-            Method to apply Differential Evolution 
-            Mutation Operation to the population
+        Method for randomizing scaling and crossover parameters
         """
-        self.MutatedPopulation = self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)]
-        self.MutatedPopulation += self.ScalingFactor*(self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)]-self.Population[np.random.randint(self.PopulationSize,size=self.PopulationSize)])
-
-    def CrossoverOperation(self) -> None:
-        """
-            Method to apply Differential Evolution 
-            Crossover Operation to the population
-        """
-        crossoverThreshold = np.random.random((self.PopulationSize,self.Dimension)) <= self.CrossoverRate
-        
-        indexesMutated = np.random.randint(self.Dimension,size=self.PopulationSize)
-        crossoverThreshold[np.arange(self.PopulationSize),indexesMutated] = True
-        
-        self.CrossoverPopulation = self.Population.copy()
-        self.CrossoverPopulation[crossoverThreshold] = self.MutatedPopulation[crossoverThreshold]
-
-        self.FitnessCrossoverPopulation = np.apply_along_axis(self.ObjectiveFunction,1,self.CrossoverPopulation)
-
-    def IterativeImproveIndividual(self,IndexIndividual:int) -> None:
-        """
-            Method to improve a given individual in the population
-
-            -- IndexIndividual:int :: Individual's index to improve
-        """
-        if self.FitnessCrossoverPopulation[IndexIndividual] <= self.FitnessValuesPopulation[IndexIndividual]:
-            self.Population[IndexIndividual] = self.CrossoverPopulation[IndexIndividual]
-            self.FitnessValuesPopulation[IndexIndividual] = self.FitnessCrossoverPopulation[IndexIndividual]
-            
-            if self.FitnessValuesPopulation[IndexIndividual] < self.OptimalValue:
-                self.OptimalValue = self.FitnessValuesPopulation[IndexIndividual]
-                self.OptimalIndividual = self.Population[IndexIndividual]
+        self.ScalingFactor = np.random.uniform(*self.RangeScalingFactor)
+        self.CrossoverRate = np.random.uniform(*self.RangeCrossoverRate)

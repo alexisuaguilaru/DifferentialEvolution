@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable
 
-class DifferentialEvolution:
+class AbstractDifferentialEvolution:
     def __init__(self,ObjectiveFunction:Callable,InitializePopulation:Callable):
         """
         Abstract Class for implementation for variants of 
