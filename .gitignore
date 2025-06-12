@@ -1,8 +1,12 @@
 *__pycache__
 *.ipynb
-*.csv
-__trash__
 *.pytest_cache
+.vscode
+
+*.csv
 *.zip
 
+__*
+
 *.md
+*.pkl

@@ -1,5 +1,0 @@
-# Requirements for plotting and showing results
-
-pandas
-seaborn
-matplotlib
