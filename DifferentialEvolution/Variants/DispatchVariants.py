@@ -5,20 +5,25 @@ from .RandomParameters import DifferentialEvolution_RandomParameters
 
 def DifferentialEvolutionVariant(Variant:str):
     """
-        Function to select between different variants of 
-        Differential Evolution based on a string
+    Function to select between different variants of 
+    Differential Evolution based on a string
 
-        -- Variant:str :: Variant's name
+    Parameter
+    ---------
+    Variant : str
+        Name of the variant which being gotten
 
-        Return variant's class
+    Return
+    ------
+    Variant_Class : DifferentialEvolution
+        Class of the variant which is requested        
     """
-    if Variant == 'Base':
-        return DifferentialEvolution
-    elif Variant == 'FixedRandomSample':
-        return DifferentialEvolution_FixedRandomSample
-    elif Variant ==  'ProportionalRandomSample':
-        return DifferentialEvolution_ProportionalRandomSample
-    elif Variant == 'Agglomerative':
-        return DifferentialEvolution_Agglomerative
-    elif Variant == 'RandomParameters':
-        return DifferentialEvolution_RandomParameters
+    return __DifferentialEvolutionVariant[Variant]
+    
+__DifferentialEvolutionVariant = {
+    'Base' : DifferentialEvolution, 
+    'FixedRandomSample' : DifferentialEvolution_FixedRandomSample, 
+    'ProportionalRandomSample' : DifferentialEvolution_ProportionalRandomSample, 
+    'Agglomerative' : DifferentialEvolution_Agglomerative, 
+    'RandomParameters' : DifferentialEvolution_RandomParameters, 
+}
