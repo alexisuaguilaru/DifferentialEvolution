@@ -5,5 +5,4 @@ __trash__/**
 tmp/**
 *.csv
 *.zip
-*.ipynb
 *.log

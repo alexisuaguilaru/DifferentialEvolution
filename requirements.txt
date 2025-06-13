@@ -1,4 +1,6 @@
-numpy >= 2.1.2
-scikit-learn >= 1.5.1
-setuptools >= 73.0.1
-opfunu == 1.0.4
+numpy >= 2.3
+scikit-learn >= 1.7
+setuptools
+
+jupyterlab
+optuna
