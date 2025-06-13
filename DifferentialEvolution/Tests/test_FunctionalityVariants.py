@@ -6,6 +6,12 @@ from .BasicFunctions import F1 , F2 , F3 , Individuals
 @pytest.mark.parametrize(('VariantName','ParametersVariant'),[
     ('Base',(0.5,0.5)),
     ('Base',((0.25,0.75),(0.25,0.75))),
+    ('Agglomerative',(0.5,0.5,[0.3,0.6])),
+    ('Agglomerative',((0.25,0.75),(0.25,0.75),[0.3,0.6])),
+    ('FixedRandomSample',(0.5,0.5,[0.5],5)),
+    ('FixedRandomSample',((0.25,0.75),(0.25,0.75),[0.5],5)),
+    ('FixedRandomSample',(0.5,0.5,[0.5],0.5)),
+    ('FixedRandomSample',((0.25,0.75),(0.25,0.75),[0.5],0.5)),
 ])
 def test_Funcionality(VariantName,ParametersVariant):
     diff_evol_class = DifferentialEvolutionVariant(VariantName)
