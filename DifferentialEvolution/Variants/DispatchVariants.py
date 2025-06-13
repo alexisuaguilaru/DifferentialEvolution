@@ -21,7 +21,7 @@ def DifferentialEvolutionVariant(Variant:str):
     
 __DifferentialEvolutionVariant = {
     'Base' : DifferentialEvolution, 
+    'Agglomerative' : DifferentialEvolution_Agglomerative,
     'FixedRandomSample' : DifferentialEvolution_FixedRandomSample, 
     'ProportionalRandomSample' : DifferentialEvolution_ProportionalRandomSample, 
-    'Agglomerative' : DifferentialEvolution_Agglomerative,
 }

@@ -15,8 +15,6 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         with Population Reduction based on Clustering Algorithms
 
         Parameters
-        ----------    
-        Parameters
         ----------
         ObjectiveFunction : Callable 
             Function being optimized 
@@ -100,6 +98,8 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         indexRepresentative = self.GetClustersRepresentatives()
         
         self.PopulationSize = len(indexRepresentative)
+        self.PopulationIndexes = np.arange(self.PopulationSize)
+        
         self.Population = self.Population[indexRepresentative]
         self.FitnessValuesPopulation = self.FitnessValuesPopulation[indexRepresentative]
 
