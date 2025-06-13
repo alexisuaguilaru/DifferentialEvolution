@@ -3,3 +3,4 @@ from .DispatchVariants import DifferentialEvolutionVariant
 from .Base import DifferentialEvolution
 from .RandomSample import DifferentialEvolution_FixedRandomSample , DifferentialEvolution_ProportionalRandomSample
 from .Agglomerative import DifferentialEvolution_Agglomerative
+from .Disperse import DifferentialEvolution_Disperse

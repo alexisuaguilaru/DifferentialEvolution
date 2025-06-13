@@ -5,6 +5,7 @@ from DifferentialEvolution import DifferentialEvolutionVariant
 @pytest.mark.parametrize(('VariantImport','VariantName'),[
     ('DifferentialEvolution','Base'),
     ('DifferentialEvolution_Agglomerative','Agglomerative'),
+    ('DifferentialEvolution_Disperse','Disperse'),
     ('DifferentialEvolution_FixedRandomSample','FixedRandomSample'),
     ('DifferentialEvolution_ProportionalRandomSample','ProportionalRandomSample'),
 ])

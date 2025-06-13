@@ -8,6 +8,8 @@ from .BasicFunctions import F1 , F2 , F3 , Individuals
     ('Base',((0.25,0.75),(0.25,0.75))),
     ('Agglomerative',(0.5,0.5,[0.3,0.6])),
     ('Agglomerative',((0.25,0.75),(0.25,0.75),[0.3,0.6])),
+    ('Disperse',(0.5,0.5,[0.5])),
+    ('Disperse',((0.25,0.75),(0.25,0.75),[0.5])),
     ('FixedRandomSample',(0.5,0.5,[0.5],5)),
     ('FixedRandomSample',((0.25,0.75),(0.25,0.75),[0.5],5)),
     ('ProportionalRandomSample',(0.5,0.5,[0.5],0.5)),

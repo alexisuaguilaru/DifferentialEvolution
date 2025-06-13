@@ -4,7 +4,7 @@ from typing import Callable
 
 from .Base import DifferentialEvolution
 
-class DifferentialEvolution_Reduction(DifferentialEvolution):
+class DifferentialEvolution_Disperse(DifferentialEvolution):
     def __init__(
             self,
             ObjectiveFunction:Callable,
@@ -12,8 +12,10 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         ):
         """
         Class for Differential Evolution Metaheuristic 
-        with Population Reduction based on Clustering Algorithms
-
+        with Population Dispersion (Augmentation) based 
+        on Duplicate the Population and apply it Normal 
+        Noise
+        
         Parameters
         ----------
         ObjectiveFunction : Callable 
@@ -22,7 +24,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         InitializeIndividual : Callable 
             Function to create individuals
         """
-        super().__init__(ObjectiveFunction,InitializeIndividual)
+        super().__init__(ObjectiveFunction, InitializeIndividual)
 
     def __call__(
             self,
@@ -58,8 +60,8 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
 
         PercentageEvaluations : list[float]
             List of percentages of function evaluations 
-            where a reduction to population is applied
-        
+            where a dispersion to population is applied
+
         Returns
         -------
         OptimalIndividual : np.ndarray
@@ -68,7 +70,7 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         Snapshots : list[float] 
             List of the optimal values at each function evaluation
         """
-        self.ApplyReductionEvaluations = set(np.ceil(FunctionEvaluations*percentage) for percentage in PercentageEvaluations)
+        self.ApplyDispersionEvaluations = set(np.ceil(FunctionEvaluations*percentage) for percentage in PercentageEvaluations)
         return super().__call__(FunctionEvaluations,PopulationSize,RangeScalingFactor,RangeCrossoverRate)
     
     def FindOptimal(
@@ -85,8 +87,10 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
             Number of function evaluations
         """
         for numberFunctionEvaluation in range(FunctionEvaluations):
-            if numberFunctionEvaluation in self.ApplyReductionEvaluations:
-                self.ApplyPopulationReduction()
+            if numberFunctionEvaluation in self.ApplyDispersionEvaluations:
+                self.ApplyPopulationDispersion()
+                self.MutationOperation()
+                self.CrossoverOperation()
                 indexIndividual = numberFunctionEvaluation%self.PopulationSize
             
             elif (indexIndividual:=numberFunctionEvaluation%self.PopulationSize) == 0:
@@ -96,35 +100,20 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
             self.IterativeImproveIndividual(indexIndividual)
             self.WriteSnapshot()
     
-    def ApplyPopulationReduction(
+    def ApplyPopulationDispersion(
             self,
         ) -> None:
         """
-        Method to apply a reduction of the population based 
-        on some clustering algorithm
+        Method to apply a dispersion of the population based 
+        on duplicate it and user normal noise
         """
-        indexRepresentative = self.GetClustersRepresentatives()
-        
-        self.PopulationSize = len(indexRepresentative)
+        dispersedPopulation = self.Population.copy() + np.random.normal(size=self.Population.shape)
+        fitnessValuesDispersedPopulation = np.apply_along_axis(self.ObjectiveFunction,1,dispersedPopulation)
+
+        self.Population = np.concat([self.Population,dispersedPopulation],axis=0)
+        self.FitnessValuesPopulation = np.concat([self.FitnessValuesPopulation,fitnessValuesDispersedPopulation],axis=0)
+
+        self.PopulationSize *= 2
         self.PopulationIndexes = np.arange(self.PopulationSize)
-        
-        self.Population = self.Population[indexRepresentative]
-        self.FitnessValuesPopulation = self.FitnessValuesPopulation[indexRepresentative]
 
         self.OptimalIndividual , self.OptimalValue = self.BestOptimalIndividual()
-
-    def GetClustersRepresentatives(
-            self,
-        ) -> list[int]:
-        """
-        Method to get the representative individuals 
-        from each cluster using a given clustering algorithm 
-        and a policy of selection
-
-        Return
-        ------
-        IndexRepresentative : list[int]
-            List of index of representative solutions 
-            in each cluster
-        """
-        pass
