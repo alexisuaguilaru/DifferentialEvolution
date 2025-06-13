@@ -14,8 +14,8 @@ def InitPopulation(PopulationSize):
 if __name__ == '__main__':
 
     # Get variant of differential evolution 
-    variant_name = 'Base'
-    optimizer = DifferentialEvolutionVariant(variant_name)
+    variant_name = 'Base' # Variants available: Base, Agglomerative, Disperse, FixedRandomSample, ProportionalRandomSample
+    optimizer = DifferentialEvolutionVariant(variant_name) 
 
 
     # Init class to get results with optimizer (differential 
@@ -24,8 +24,8 @@ if __name__ == '__main__':
 
 
     # Define arguments for save simulations/results and threading
-    simulation_times = 50
-    dir_result = './'
+    simulation_times = 10
+    dir_result = '.' # Use a path for create un csv with the results, or use '.' for get the medians instead of generate a csv file
     name_results = 'example_results.csv'
     threads = -1 # Because use of joblib, -1 is equal to use all available threads
 
@@ -36,8 +36,8 @@ if __name__ == '__main__':
     crossover_rate = 0.5
 
     # Call function to process results and simulations
-    time_execution = get_results(simulation_times,function_evaluations,population_size,scaling_factor,crossover_rate,DirResults=dir_result,NameResults=name_results,ThreadPool=threads)
+    results_medians = get_results(simulation_times,function_evaluations,population_size,scaling_factor,crossover_rate,DirResults=dir_result,NameResults=name_results,ThreadPool=threads)
 
 
     # Print time of execution
-    print(f'{time_execution=}')
+    print(f'Median of best optimal values: {results_medians[-1]}')

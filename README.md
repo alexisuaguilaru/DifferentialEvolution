@@ -17,31 +17,32 @@ It is first necessary to clone the project:
 ```bash
 git clone https://github.com/alexisuaguilaru/DifferentialEvolution
 ```
-<details open>
-<summary><h3>With Docker Run</h3></summary>
 
-The configuration file located in ``Experiments/ConfigExperiments.json`` is the main file that has to be modified to generate the different experiments. It contains the configuration of the parameters related to the Differential Evolution variants as well as the parameters for their execution.
+### Using Docker
+Docker was used to create a Jupyter environment that contains everything necessary to use this project along with other libraries to perform the optimization of Differential Evolution hyperparameters.
 
-First it will be required to build the image of the container with the following command:
+First, the Docker image has to be built, in which it will be possible to interact with the Differential Evolution variants in a Jupyter environment:
 ```bash
 docker build -t diff_evol .
 ```
-Subsequently, the configuration file will have to be modified to adapt it to the experiment or simulations to be executed. Finally, the container is executed with:
+
+Finally, the built container image is executed:
 ```bash
-docker run -d -it --rm -v ./Experiments:/DIFF_EVOL/Experiments diff_evol
+docker run -p 8888:8888 --mount type=bind,src=./Experiments,dst=/DIFF_EVOL/Experiments diff_evol
 ```
-</details>
 
-<details open>
-<summary><h3>With Python </h3></summary>
+It opens as if it were any other run performed with ``jupyter lab``. In order to properly preserve the created Jupyter notebooks, they have to be created in the Experiments folder inside the Jupyter environment and can be found in the folder with the same name in the project directory.
 
-In order to run the ``.py`` script it is first necessary to install the necessary dependencies:
+### Using Python Scripts
+First it is necessary to install the libraries, preferably in a Python environment, using the following commands:
 ```bash
 pip install -r requirements.txt
 pip install --ignore-requires-python opfunu==1.0.4
 ```
-Then you have to configure and modify the parameters contained in ``ScriptResults.py`` to suit the experiment to be run. And finally, the script is executed with:
+
+This allows making full use of the project and the Differential Evolution variants. To execute the variants as Python scripts and generate the relevant results, it is suggested to consult the example script [MinimalExample.py](./MinimalExample.py).
+
+The example provided can be executed with the following command:
 ```bash
-python ScriptResults.py
+python MinimalExample.py
 ```
-</details>
