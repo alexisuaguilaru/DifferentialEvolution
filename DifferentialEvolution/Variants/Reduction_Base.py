@@ -59,6 +59,14 @@ class DifferentialEvolution_Reduction(DifferentialEvolution):
         PercentageEvaluations : list[float]
             List of percentages of function evaluations 
             where a reduction to population is applied
+        
+        Returns
+        -------
+        OptimalIndividual : np.ndarray
+            Best solution that was founded
+
+        Snapshots : list[float] 
+            List of the optimal values at each function evaluation
         """
         self.ApplyReductionEvaluations = set(np.ceil(FunctionEvaluations*percentage) for percentage in PercentageEvaluations)
         return super().__call__(FunctionEvaluations,PopulationSize,RangeScalingFactor,RangeCrossoverRate)

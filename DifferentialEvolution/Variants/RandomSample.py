@@ -2,47 +2,81 @@ import numpy as np
 from math import floor , ceil
 from sklearn.cluster import k_means
 from collections import defaultdict
-from random import sample
 
 from typing import Callable
 
 from .Reduction_Base import DifferentialEvolution_Reduction
 
 class DifferentialEvolution_FixedRandomSample(DifferentialEvolution_Reduction):
-    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
+    def __init__(
+            self,
+            ObjectiveFunction:Callable,
+            InitializeIndividual:Callable,
+        ):
         """
-            Class for Differential Evolution Metaheuristic with Population Reduction 
-            based on K Means Algorithm with Random Sample of Fixed Number of Representatives
+        Class for Differential Evolution Metaheuristic with Population Reduction 
+        based on K-Means Algorithm with Random Sample of Fixed Number of Representatives
             
-            -- ObjectiveFunction:Callable :: Function being optimized 
+        Parameters
+        ----------
+        ObjectiveFunction : Callable 
+            Function being optimized 
 
-            -- InitializeIndividual:Callable :: Function to create individuals
-
-            Based on DE/rand/1/bin using number of function evaluations instead of iterations
+        InitializeIndividual : Callable 
+            Function to create individuals
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float,PercentageEvaluations:list[float],SampledIndividuals:int=3) -> tuple[np.ndarray,list[float]]:
+    def __call__(
+            self,
+            FunctionEvaluations:int,
+            PopulationSize:int,
+            RangeScalingFactor:tuple[float,float]|float=[0,1],
+            RangeCrossoverRate:tuple[float,float]|float=[0,1],
+            PercentageEvaluations:list[float]=[0.5],
+            SampledIndividuals:int=3
+        ) -> tuple[np.ndarray,list[float]]:
         """
-            Method for searching optimal solution for objective function
-            
-            -- FunctionEvaluations:int :: Amount of function evaluations
-            
-            -- PopulationSize:int :: Parameter NP. Size of solutions population
-            
-            -- ScalingFactor:float :: Parameter F. Scaling factor for difference vector 
-            
-            -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
+        Method for searching optimal solution for a give objective 
+        function. Return the best optimal solution, because of 
+        implementation will be the minimum.
 
-            -- PercentageEvaluations:list :: List of percentages of function evaluations 
+        If both numbers in one of the ranges are equal, the parameter 
+        is no random.
+
+        Parameters
+        ----------
+        FunctionEvaluations : int 
+            Number of function evaluations
+
+        PopulationSize : int 
+            Parameter NP. Size of population of solutions
+
+        RangeScalingFactor : tuple[float,float] | float
+            Range of values for Parameter F. Scaling factor 
+            for difference between vector.
+
+        RangeCrossoverRate : tuple[float,float] | float
+            Range of values for Parameter Cr. Crossover rate 
+            for crossover operation
+
+        PercentageEvaluations : list[float]
+            List of percentages of function evaluations 
             where a reduction to population is applied
+        
+        SampledIndividuals : int
+            Number of sampled individuals in each cluster
 
-            -- SampledIndividuals:int :: Number of sampled individuals in each cluster
+        Returns
+        -------
+        OptimalIndividual : np.ndarray
+            Best solution that was founded
 
-            Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
+        Snapshots : list[float] 
+            List of the optimal values at each function evaluation
         """
         self.SampledIndividuals = SampledIndividuals
-        return super().__call__(FunctionEvaluations,PopulationSize,ScalingFactor,CrossoverRate,PercentageEvaluations)
+        return super().__call__(FunctionEvaluations,PopulationSize,RangeScalingFactor,RangeCrossoverRate,PercentageEvaluations)
 
     def GetClustersRepresentatives(self) -> list[int]:
         population_fitness = np.concat([self.Population,self.FitnessValuesPopulation.reshape((self.PopulationSize,1))],axis=1)
@@ -62,40 +96,75 @@ class DifferentialEvolution_FixedRandomSample(DifferentialEvolution_Reduction):
         return indexRepresentative
     
 class DifferentialEvolution_ProportionalRandomSample(DifferentialEvolution_Reduction):
-    def __init__(self,ObjectiveFunction:Callable,InitializeIndividual:Callable):
+    def __init__(
+            self,
+            ObjectiveFunction:Callable,
+            InitializeIndividual:Callable,
+        ):
         """
-            Class for Differential Evolution Metaheuristic with Population Reduction 
-            based on K Means Algorithm with Random Sample of Proportional Number of Representatives
+        Class for Differential Evolution Metaheuristic with Population Reduction 
+        based on K Means Algorithm with Random Sample of Proportional Number of Representatives
             
-            -- ObjectiveFunction:Callable :: Function being optimized 
+        Parameters
+        ----------
+        ObjectiveFunction : Callable 
+            Function being optimized 
 
-            -- InitializeIndividual:Callable :: Function to create individuals
-
-            Based on DE/rand/1/bin using number of function evaluations instead of iterations
+        InitializeIndividual : Callable 
+            Function to create individuals
         """
         super().__init__(ObjectiveFunction,InitializeIndividual)
 
-    def __call__(self,FunctionEvaluations:int,PopulationSize:int,ScalingFactor:float,CrossoverRate:float,PercentageEvaluations:list[float],ProportionIndividuals:float=1/2) -> tuple[np.ndarray,list[float]]:
+    def __call__(
+            self,
+            FunctionEvaluations:int,
+            PopulationSize:int,
+            RangeScalingFactor:tuple[float,float]|float=[0,1],
+            RangeCrossoverRate:tuple[float,float]|float=[0,1],
+            PercentageEvaluations:list[float]=[0.5],
+            ProportionIndividuals:float=1/2,
+        ) -> tuple[np.ndarray,list[float]]:
         """
-            Method for searching optimal solution for objective function
-            
-            -- FunctionEvaluations:int :: Amount of function evaluations
-            
-            -- PopulationSize:int :: Parameter NP. Size of solutions population
-            
-            -- ScalingFactor:float :: Parameter F. Scaling factor for difference vector 
-            
-            -- CrossoverRate:float :: Parameter Cr. Crossover rate for crossover operation
+        Method for searching optimal solution for a give objective 
+        function. Return the best optimal solution, because of 
+        implementation will be the minimum.
 
-            -- PercentageEvaluations:list :: List of percentages of function evaluations 
+        If both numbers in one of the ranges are equal, the parameter 
+        is no random.
+
+        Parameters
+        ----------
+        FunctionEvaluations : int 
+            Number of function evaluations
+
+        PopulationSize : int 
+            Parameter NP. Size of population of solutions
+
+        RangeScalingFactor : tuple[float,float] | float
+            Range of values for Parameter F. Scaling factor 
+            for difference between vector.
+
+        RangeCrossoverRate : tuple[float,float] | float
+            Range of values for Parameter Cr. Crossover rate 
+            for crossover operation
+
+        PercentageEvaluations : list[float]
+            List of percentages of function evaluations 
             where a reduction to population is applied
+        
+        ProportionIndividuals : float
+            Proportion of sampled individuals in each cluster
 
-            -- ProportionIndividuals:float :: Proportion of sampled individuals in each cluster
+        Returns
+        -------
+        OptimalIndividual : np.ndarray
+            Best solution that was founded
 
-            Return the best optimal solution, because of implementation will be the minimum, and snapshots of the population at each generation
+        Snapshots : list[float] 
+            List of the optimal values at each function evaluation
         """
         self.ProportionIndividuals = ProportionIndividuals
-        return super().__call__(FunctionEvaluations,PopulationSize,ScalingFactor,CrossoverRate,PercentageEvaluations)
+        return super().__call__(FunctionEvaluations,PopulationSize,RangeScalingFactor,RangeCrossoverRate,PercentageEvaluations)
 
     def GetClustersRepresentatives(self) -> list[int]:
         population_fitness = np.concat([self.Population,self.FitnessValuesPopulation.reshape((self.PopulationSize,1))],axis=1)

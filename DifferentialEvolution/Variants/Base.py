@@ -58,6 +58,14 @@ class DifferentialEvolution(AbstractDifferentialEvolution):
         RangeCrossoverRate : tuple[float,float] | float
             Range of values for Parameter Cr. Crossover rate 
             for crossover operation
+
+        Returns
+        -------
+        OptimalIndividual : np.ndarray
+            Best solution that was founded
+
+        Snapshots : list[float] 
+            List of the optimal values at each function evaluation
         """
         self.RangeScalingFactor = self.ValidateRangeParameter(RangeScalingFactor)
         self.RangeCrossoverRate = self.ValidateRangeParameter(RangeCrossoverRate)
